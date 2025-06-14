@@ -280,7 +280,11 @@ In the meterpreter shell we can see the running processes with the **ps** comman
 
 We can see a process called **iexplorer.exe**, this is the browser.
 
-We migrate to that process with the **migrate <pid>**.
+We migrate to that process with
+
+```
+migrate <pid>
+```
 
 Now we can setup the keylogger and wait.
 
