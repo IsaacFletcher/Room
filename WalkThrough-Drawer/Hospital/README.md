@@ -233,7 +233,7 @@ The obvious privilege escalation path lyes through the Roundcube webmail.
 
 Navigating to the C:\ directory we see that there is a folder named xampp.
 
-Xammp is a bundle for hosting a web server with sql,apache etc. servers. In that directory there is the htdocs directory that contains the Roundcube source. Doing acl on it we see that our user has write permission. We write a webshell and browse to it from the port 443.
+Xammp is a bundle for hosting a web server with sql,apache etc. servers. In that directory there is the htdocs directory that contains the Roundcube source. Doing icacls on it we see that our user has write permission. We write a webshell and browse to it from the port 443.
 
 ## Step 7-2: Metasploit & Keylogger
 
