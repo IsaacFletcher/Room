@@ -57,11 +57,9 @@ So it's really easy to just run tools and see output. However we need to have a 
 What are we trying to achieve here?
 
 We want to have as much information about the assets of the target as possible.
-
 After that we want to know as much information about the contents of said assets of the target as possible.
 
 Why? This will give us as large attack vector as possible.
-
 More attack vectors, bigger chance of getting a better meal:D
 
 There is never too much recon.
@@ -71,11 +69,8 @@ There is never too much recon.
 Okay lets start with asset discovery.
 
 First thing we look for in a target is the domain and subdomais.
-
 There are a lot of ways to enumerate subdomains.
-
 The first thing that pops in my head is using **subfinder**.
-
 To use subfinder efficiently go to the providers configuration and add API keys.
 
 After that you will get resaults with just
@@ -92,6 +87,7 @@ Another method for enumerating subdomains is by bruteforcing your way with Shuff
 You should have a list of resolvers and a wordlist to bruteforce subdomains.
 
 Resolvers: https://raw.githubusercontent.com/trickest/resolvers/refs/heads/main/resolvers.txt
+
 Wordlist: https://wordlists-cdn.assetnote.io/data/automated/httparchive_subdomains_2025_09_27.txt
 
 These are just some good wordlists, don't limit yourself to only one pair of wordlists
@@ -103,17 +99,14 @@ shuffledns -d arubanetworks.com -w wordlist.txt -r resolvers.txt -mode bruteforc
 ```
 
 Use -silent for only the domains as the output (usefull if you pipe the output to another tool)
-
 This will bruteforce with DNS and give you a list of domains that resolved to an IP address.
 
 #### Finding permutations with alterx
 
 After finding some amount of subdomains you can see if there are any permutations of that subdomains.
-
 There's a tool for that!
 
 Alterx will take a list of domains and alter the subdomain and give you a list.
-
 Just pipe the domains from shuffledns to alterx and get a new list of subdomains.
 
 Pipe that into another file for later use.
@@ -125,8 +118,6 @@ echo 'something.example.com' | alterx | tee alterx-subdomains.txt
 #### Checking for availability with dnsx
 
 After getting the alterx-subdomains you can check if they exist with dnsx.
-
-
 Just pipe the output to dnsx.
 
 ```bash
@@ -138,7 +129,6 @@ This will give you the ones that are available.
 #### Fast port scanning with naabu
 
 After getting a decent amount of subdomains we can look for open ports.
-
 Usually you would use something like rustscan or nmap for that, but projectdiscovery tools work really harmonicaly together.
 
 Just pipe the output to naabu with some arguments and it will get the job done.
@@ -152,13 +142,11 @@ cat domains.txt | alterx | dnsx | naabu -top-ports 100 -ep 22 # (Exclude port 22
 Next up is content discovery.
 
 After enumerating all these assets we now can proceed to the messy part.
-
 There is a lot more content than assets. We need to filter the irrelevant or non interesting content as much as possible.
 
 #### Content Availability with httpx
 
 httpx is a great tool for automated availability checking.
-
 There are a lot of usefull parameters but you can check those for yourself.
 
 Some basic parameters allow us to get the title, content type, content length, and many others in a compact way.
