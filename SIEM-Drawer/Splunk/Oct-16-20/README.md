@@ -75,5 +75,46 @@ The following Splunk query searches for alerts containing the string `Gh0st`, an
 index=suricata host=onion-fn1 Gh0st | stats count by alert.signature src_ip dest_ip
 ```
 
-This reveals that the potentially infected host IP address is `172.16.6.104` which is communicating with the external IP address `199.28.139.120`
+This reveals that the potentially infected host IP address is `172.16.6.104` which is communicating with the external IP address `119.28.139.120`
 
+### Hunting Initial Execution
+
+Now we have enough information to identify malicious processes and activities performed by the attackers.
+
+We have Sysmon logs which are ideal for identifying such events.
+
+Sysmon logs have EventCode fields which say what action was performed.
+
+First we have to identify the infected hostname. To do that we can look at the network diagram, but what if we didn't have a network diagram?
+
+We can look for Sysmon EventCode 22 which is DNS queries.
+
+```
+index=windows EventCode=22 172.16.6.104
+```
+
+Now that we know the hostname we can tune our searches for that exact host with `host="hostname"`
+
+Next we want to find the process that made a network connection to the identified malicious IP (119.28.139.120).
+
+To do that we can use EventCode 3 which is Network Connections
+
+```
+index=windows host="hostname" EventCode=3 119.28.139.120
+```
+
+First log is almost at the same time as the suricata detection.
+
+We get a ProcessId, which we can use to further dive into child processes and other activities.
+
+Looking for EventCode 1 which is execution, with the ProcessId we get the filename path, the user and the ParentCommandLine, and identify the malicious stager.
+
+Then we can look at all the processes which have ParentImage set to the stager.
+
+```
+index=windows host="hostname" EventCode=1 ParentImage="C:\\<path-to-image>"
+```
+
+First we find a cmd child process, which is a parent process for a powershell process which executes the malicious .exe file.
+
+Looking at network logs we see that it also makes a connection to our proxy server. Looking at the proxy server logs with compromised source ip and source port we see the original filename which was downloaded and a domain name which we can now flag as malicious.
