@@ -1,0 +1,15 @@
+alert tcp $EXTERNAL_NET any -> $HOME_NET {PORT} (
+    msg:"ET SCAN BruteForce attempt"; 
+    flow:established,to_server; 
+    content:"{LOGIN_FINGERPRINT} "; 
+    nocase; # case insensitive
+    depth:5; # first 5 bytes 
+    content:"{USER_FINGERPRINT}"; 
+    within:15; # within next 15 bytes
+    nocase; # case insensitive
+    threshold: type threshold, track by_src, count 5, seconds 60; # alert every Nth time, track source IP, five attempts within 60 seconds   
+    classtype:attempted-recon; 
+    sid:2010642; 
+    rev:3; 
+    metadata:created_at 2010_07_30, confidence Medium, signature_severity Informational, updated_at 2019_07_26;
+    )
