@@ -23,6 +23,17 @@ def directory_check(output, subdir_name=None):
         return range_dir
     return output
 
+# Function to extract domain names from Shodan response
+def extract_domains_from_shodan(result_json, range_dir):
+    if "hostnames" in result_json:
+        hostnames = result_json["hostnames"]
+        if hostnames:
+            with open(f"{range_dir}/domains.txt", "a") as domains_file:
+                for hostname in hostnames:
+                    domains_file.write(f"{hostname}\n")
+            print(colored(f"[*] Domains extracted and saved to {range_dir}/domains.txt", 'green'))
+    else:
+        print(colored(f"[!] No domains found in Shodan data", 'yellow'))
 
 # Function to handle Shodan scan for each IP
 def shodan(ip, output, last_octet, range_dir):
@@ -36,6 +47,9 @@ def shodan(ip, output, last_octet, range_dir):
         result_json = json.loads(info.text)
         with open(f"{range_dir}/{last_octet}.json", "w") as ip_result:
             ip_result.write(info.text)
+        # Extract and save domain names
+        extract_domains_from_shodan(result_json, range_dir)
+
         print(colored(f"[*] Shodan results saved for: {ip}", 'green'))
     return
 
