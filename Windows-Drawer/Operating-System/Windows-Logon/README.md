@@ -18,7 +18,7 @@ Initialy it creates two sessions
 It's job is to manage processes and threads
 
 When a usermode process calls a function for process/thread creation - win32 libraries send an IPC (inter process call) to csrss.exe which does the actual work without compromising the kernel. 
-> > [!IMPORTANT]
+> [!IMPORTANT]
 > Only two instances of csrss.exe should be present in a given task manager.
 
 #### WININIT.EXE (Windows Initialization Process)
@@ -43,6 +43,6 @@ Manages security policies and settings
 - **csrss.exe**
 - **winlogon.exe**
 
-> :> [!IMPORTANT]
+> [!IMPORTANT]
 > Only one instance of smss.exe can be present at ANY given time.
 
